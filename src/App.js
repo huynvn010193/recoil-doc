@@ -1,24 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import {
+  RecoilRoot,
+  atom,
+  useRecoilState,
+  selector,
+  useRecoilValue,
+} from "recoil";
+import TodoList from "./TodoList";
+
+const textState = atom({
+  key: "textState",
+  default: "",
+});
+
+const charCountState = selector({
+  key: "charCountState",
+  get: ({ get }) => {
+    const text = get(textState);
+    return text.length;
+  },
+});
+
+function TextInput() {
+  const [text, setText] = useRecoilState(textState);
+
+  const onChange = (e) => {
+    setText(e.target.value);
+  };
+
+  return (
+    <div>
+      <input type="text" value={text} onChange={onChange} />
+      <br />
+      Echo: {text}
+    </div>
+  );
+}
+
+function CharacterCount() {
+  const count = useRecoilValue(charCountState);
+  return <>Character Count: {count}</>;
+}
+
+function CharacterCounter() {
+  return (
+    <div style={{ marginLeft: "20px", marginTop: "20px" }}>
+      <TextInput />
+      <CharacterCount />
+    </div>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RecoilRoot>
+      <CharacterCounter />
+      <TodoList />
+    </RecoilRoot>
   );
 }
 
