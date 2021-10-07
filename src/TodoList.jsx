@@ -12,10 +12,10 @@ function TodoItemCreator() {
     setTodoList((oldTodoList) => [
       ...oldTodoList,
       {
-        id: getId();
+        id: getId(),
         text: inputValue,
-        isComplete: false
-      }
+        isComplete: false,
+      },
     ]);
   };
   return (
