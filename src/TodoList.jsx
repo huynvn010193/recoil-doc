@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  atom,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState,
+} from "recoil";
 
 const todoListState = atom({
   key: "todoListState",
@@ -27,22 +32,44 @@ function TodoItemCreator() {
     setInputValue("");
   };
 
-  const onChange = ({target: {value}}) => {
+  const onChange = ({ target: { value } }) => {
     setInputValue(value);
-  }
+  };
 
   return (
     <div>
-      <input type="text" value={inputValue} onChange={onChange} style={{ marginLeft: "20px", marginTop: "20px" }} />
+      <input
+        type="text"
+        value={inputValue}
+        onChange={onChange}
+        style={{ marginLeft: "20px", marginTop: "20px" }}
+      />
       <button onClick={addItem}>Add</button>
     </div>
   );
 }
 
-function TodoItem({item}) {
+function replaceItemAtIndex(arr, index, newValue) {
+  console.log({ index });
+  return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
+}
+
+function TodoItem({ item }) {
+  const [todoList, setTodoList] = useResetRecoilState(todoListState);
+  const index = todoList.findIndex((listItem) => listItem === item);
+
+  const editItems = ({ target: { value } }) => {
+    const newList = replaceItemAtIndex(todoList, index, {
+      ...item,
+      text: value,
+    });
+    console.log({ newList });
+    setTodoList(newList);
+  };
+
   return (
     <div>
-      <input type="text" value={item.text} />
+      <input type="text" value={item.text} onChange={editItems} />
       <input type="checkbox" />
       <button onClick={null}>X</button>
     </div>
@@ -51,12 +78,11 @@ function TodoItem({item}) {
 
 const TodoList = (props) => {
   const todoList = useRecoilValue(todoListState);
-  console.log("🚀 ~ file: TodoList ~ todoList", todoList)
   return (
     <div>
       <TodoItemCreator />
       {todoList.map((todoItem) => (
-        <TodoItem item={todoItem}/>
+        <TodoItem item={todoItem} />
       ))}
     </div>
   );
