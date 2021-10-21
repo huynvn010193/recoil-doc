@@ -25,3 +25,21 @@ export const filterTodoListState = selector({
     }
   },
 });
+
+export const todoListStatsState = selector({
+  key: 'todoListStatsState',
+  get: ({ get }) => {
+    const todoList = get(todoListState);
+    const totalNum = todoList.length;
+    const totalComplete = todoList.filter((item) => item.isComplete).length;
+    const totalUncompleted = totalNum - totalComplete;
+    const percentCompleted = totalNum === 0 ? 0 : totalComplete / totalNum * 100;
+    return {
+      totalNum,
+      totalComplete,
+      totalUncompleted,
+      percentCompleted
+    }
+  }
+})
+

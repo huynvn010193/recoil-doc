@@ -27,10 +27,18 @@ export default function TodoItem({ item }) {
     setTodoList(newList);
   };
 
+  const toggleItemComplete = () => {
+    const newList = replaceItemAtIndex(todoList, index, {
+      ...item,
+      isComplete: !item.isComplete,
+    });
+    setTodoList(newList);
+  }
+
   return (
     <div style={{ marginLeft: "20px", marginTop: "5px" }}>
       <input type="text" value={item.text} onChange={editItems} />
-      <input type="checkbox" />
+      <input type="checkbox" checked={item.isComplete} onChange={toggleItemComplete}/>
       <button onClick={deleteItems}>X</button>
     </div>
   );
